@@ -11,16 +11,21 @@ package seabattle;
 
 public class BoardController {
 
-    private BoardModel boardModel;
-    private BoardView boardView;
+    private BoardModel model;
+    private BoardView view;
 
     public BoardController() {
-        boardModel = new BoardModel(10);
-        boardView = new BoardView(boardModel);
+        // Create the Model.
+        model = new BoardModel();
+        // Create the View.
+        view = new BoardView(this, model);
     }
 
-    public void startApp() {
-        boardView.setVisible(true);
+    // Receive event information from View.
+    public void onMouseWasPressed(int x, int y) {
+        // Tell model to do stuff
+        System.out.println("Controller: received event from view.");
+        model.setCell(y / view.getCellSize(), x / view.getCellSize());
     }
 
 }

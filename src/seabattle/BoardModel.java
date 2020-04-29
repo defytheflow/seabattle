@@ -15,34 +15,64 @@ import java.util.ArrayList;
 public class BoardModel {
 
     private static final char EMPTY_CELL;
+    private static final char OCCUPIED_CELL;
+    private static final int BOARD_SIZE;
 
     static {
         EMPTY_CELL = '0';
+        OCCUPIED_CELL = '1';
+        BOARD_SIZE = 10;
     }
 
-    private int size;
     private char[][] board;
+    private int boardSize;
+    private BoardView listener;
 
-    public BoardModel(int size) {
-        this.size = size;
+    public BoardModel() {
         initBoard();
     }
 
     private void initBoard() {
-        board = new char[size][size];
-        for (int i = 0; i < size; ++i) {
-            for (int j = 0; j < size; ++j) {
+        board = new char[BOARD_SIZE][BOARD_SIZE];
+        for (int i = 0; i < BOARD_SIZE; ++i) {
+            for (int j = 0; j < BOARD_SIZE; ++j) {
                 board[i][j] = EMPTY_CELL;
             }
         }
     }
 
-    public int getSize() {
-        return size;
+    public int getBoardSize() {
+        return BOARD_SIZE;
     }
 
     public char[][] getBoard() {
         return board;
+    }
+
+    public void setCell(int row, int col) {
+        // Check valid position.
+        System.out.println("Model: received query from controller.");
+        if (row > BOARD_SIZE || col > BOARD_SIZE || row < 0 || col < 0) {
+            System.err.println("Error: invalid cell position");
+            return;
+        }
+
+        if (board[row][col] != EMPTY_CELL) {
+            System.err.println("Error: cell not empty!");
+            return;
+        }
+
+        board[row][col] = OCCUPIED_CELL;
+        listener.modelWasUpdated();
+    }
+
+    public boolean cellIsEmpty(int row, int col) {
+        // Check valid position.
+        return board[row][col] == EMPTY_CELL;
+    }
+
+    public void setListener(BoardView view) {
+        listener = view;
     }
 
 }
