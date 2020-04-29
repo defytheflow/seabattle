@@ -1,4 +1,0 @@
-SeaBattle
-Player
-Board
-Ship
