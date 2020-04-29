@@ -1,3 +1,5 @@
+package seabattle;
+
 import java.util.Arrays;
 
 
