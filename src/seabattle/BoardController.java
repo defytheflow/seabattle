@@ -27,7 +27,7 @@ public class BoardController implements ViewListener {
     public void mousePressed(int x, int y) {
         // Tell model to do stuff
         System.out.println("Controller: received event from view.");
-        model.setCell(y / view.getCellSize(), x / view.getCellSize());
+        // model.setCell(y / view.getCellSize(), x / view.getCellSize());
     }
 
 }

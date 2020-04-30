@@ -1,37 +1,37 @@
 package seabattle;
 
-import java.util.Arrays;
-
 
 public class Ship {
 
-    private static final int MIN_SIZE = 1;
-    private static final int MAX_SIZE = 4;
+    private static final int SHIP_MIN_SIZE;
+    private static final int SHIP_MAX_SIZE;
 
-    private int size;
-    private char skin;
-    private int[] pos;
-
-    public Ship(int size, char skin) {
-        setSize(size);
-        this.skin = skin;
+    static {
+        SHIP_MIN_SIZE = 1;
+        SHIP_MAX_SIZE = 4;
     }
 
-    private void setSize(int size) throws IllegalArgumentException {
-        if (size < MIN_SIZE || size > MAX_SIZE) {
-            throw new IllegalArgumentException(
-                "Error: ship size must be in range " + MIN_SIZE + ".." + MAX_SIZE + "."
-            );
+    private int size;
+    private char cell;
+
+    public Ship(int size) {
+        if (!sizeIsValid(size)) {
+            throw new IllegalArgumentException("Error: invalid ship size.");
         }
         this.size = size;
+        this.cell = (char) (size + (int) '0');
     }
 
     public int getSize() {
-        return this.size;
+        return size;
     }
 
-    public char getSkin() {
-        return this.skin;
+    public char getCell() {
+        return cell;
+    }
+
+    private boolean sizeIsValid(int size) {
+        return (SHIP_MIN_SIZE <= size && size <= SHIP_MAX_SIZE);
     }
 
 }

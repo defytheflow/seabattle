@@ -8,20 +8,32 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
+import java.util.HashMap;
+
 
 @SuppressWarnings("serial")
 public class BoardView  extends JFrame implements ModelListener {
 
     private static final int WIDTH;
     private static final int HEIGHT;
-    private static final Color EMPTY_CELL_COLOR;
-    private static final Color OCCUPIED_CELL_COLOR;
+    private static final HashMap<Character, Color> CELLS_COLORS;
 
     static {
         WIDTH = 600 + 2 + 2;
         HEIGHT = 600 + 26;
-        EMPTY_CELL_COLOR = Color.WHITE;
-        OCCUPIED_CELL_COLOR = Color.MAGENTA;
+        CELLS_COLORS = createMap();
+    }
+
+    /* Static Methods */
+
+    private static HashMap<Character, Color> createMap() {
+        HashMap<Character, Color> map = new HashMap<Character, Color>();
+        map.put('0', Color.WHITE);
+        map.put('1', Color.BLUE);
+        map.put('2', Color.RED);
+        map.put('3', Color.GREEN);
+        map.put('4', Color.MAGENTA);
+        return map;
     }
 
     private BoardController controller;
@@ -105,7 +117,7 @@ public class BoardView  extends JFrame implements ModelListener {
         }
 
         private Color getCellColor(int row, int col) {
-            return model.cellIsEmpty(row, col) ? EMPTY_CELL_COLOR : OCCUPIED_CELL_COLOR;
+            return CELLS_COLORS.get(model.getCell(row, col));
         }
 
         private void drawCellBorders(Graphics g) {
