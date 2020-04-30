@@ -73,7 +73,7 @@ public class BoardModel implements Model {
                 board[i][j] = EMPTY_CELL;
             }
         }
-        arrangeShips();
+        // arrangeShips();
     }
 
     private void arrangeShips() {
@@ -91,10 +91,6 @@ public class BoardModel implements Model {
 
                 // System.out.printf("Ship %c, Row %d\n", ship.getCell(), randomRow);
                 // System.out.println(Arrays.toString(shipLocations.toArray()));
-
-                if (shipLocations.size() == 0) {
-                    System.exit(1);
-                }
 
                 if (shipLocations.size() > 0) {
                     int randomLocation = (int) Math.random() * shipLocations.size();
