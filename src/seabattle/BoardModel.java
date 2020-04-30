@@ -2,33 +2,33 @@
  *   - Store data.
  *   - Provide data.
  *   - Update data.
- *   - Delete data.
  *
  */
 
 package seabattle;
 
-import java.util.Arrays;
 import java.util.ArrayList;
 
 
-public class BoardModel {
+public class BoardModel implements Model {
 
     private static final char EMPTY_CELL;
     private static final char OCCUPIED_CELL;
-    private static final int BOARD_SIZE;
+    private static final int  BOARD_SIZE;
 
     static {
-        EMPTY_CELL = '0';
+        EMPTY_CELL    = '0';
         OCCUPIED_CELL = '1';
-        BOARD_SIZE = 10;
+        BOARD_SIZE    = 10;
     }
 
+    private ArrayList<ModelListener> modelListeners;
     private char[][] board;
-    private int boardSize;
-    private BoardView listener;
+
+    /* Construction/Initialization */
 
     public BoardModel() {
+        modelListeners = new ArrayList<ModelListener>();
         initBoard();
     }
 
@@ -41,38 +41,57 @@ public class BoardModel {
         }
     }
 
+    /* Model Interface */
+
+    @Override
+    public void addModelListener(ModelListener ml) {
+        if (!modelListeners.contains(ml)) {
+            modelListeners.add(ml);
+        }
+    }
+
+    @Override
+    public void removeModelListener(ModelListener ml) {
+        modelListeners.remove(ml);
+    }
+
+    @Override
+    public void update() {
+        for (ModelListener ml : modelListeners) {
+            ml.modelUpdated();
+        }
+    }
+
+    /* Public Methods */
+
     public int getBoardSize() {
         return BOARD_SIZE;
     }
 
-    public char[][] getBoard() {
-        return board;
-    }
-
     public void setCell(int row, int col) {
-        // Check valid position.
-        System.out.println("Model: received query from controller.");
-        if (row > BOARD_SIZE || col > BOARD_SIZE || row < 0 || col < 0) {
-            System.err.println("Error: invalid cell position");
+
+        if (!cellIsValid(row, col)) {
+            System.err.println("Error: cell is not valid!");
             return;
         }
 
-        if (board[row][col] != EMPTY_CELL) {
-            System.err.println("Error: cell not empty!");
+        if (!cellIsEmpty(row, col)) {
+            System.err.println("Error: cell is not empty!");
             return;
         }
 
         board[row][col] = OCCUPIED_CELL;
-        listener.modelWasUpdated();
+        update();
     }
 
     public boolean cellIsEmpty(int row, int col) {
-        // Check valid position.
-        return board[row][col] == EMPTY_CELL;
+        return (board[row][col] == EMPTY_CELL);
     }
 
-    public void setListener(BoardView view) {
-        listener = view;
+    /* Private Methods */
+
+    private boolean cellIsValid(int row, int col) {
+        return (0 <= row && row < BOARD_SIZE) && (0 <= col && col < BOARD_SIZE);
     }
 
 }

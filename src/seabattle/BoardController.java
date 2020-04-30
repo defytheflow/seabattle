@@ -9,7 +9,7 @@
 package seabattle;
 
 
-public class BoardController {
+public class BoardController implements ViewListener {
 
     private BoardModel model;
     private BoardView view;
@@ -19,10 +19,12 @@ public class BoardController {
         model = new BoardModel();
         // Create the View.
         view = new BoardView(this, model);
+
+        model.addModelListener(view);
     }
 
-    // Receive event information from View.
-    public void onMouseWasPressed(int x, int y) {
+    @Override
+    public void mousePressed(int x, int y) {
         // Tell model to do stuff
         System.out.println("Controller: received event from view.");
         model.setCell(y / view.getCellSize(), x / view.getCellSize());
