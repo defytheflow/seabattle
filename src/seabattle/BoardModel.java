@@ -5,20 +5,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 
-public class BoardModel implements Model {
+public class BoardModel {
 
-    private static final int  BOARD_SIZE;
-    private static final char EMPTY_CELL, OCCUPIED_CELL;
+    private static final char EMPTY_CELL;
+    private static final char OCCUPIED_CELL;
     private static final HashMap<Integer, Integer> SHIP_COUNT;
 
     static {
-        BOARD_SIZE = 10;
         EMPTY_CELL = '0';
         OCCUPIED_CELL = '1';
         SHIP_COUNT = createMap();
     }
-
-    /* Static Methods */
 
     private static HashMap<Integer, Integer> createMap() {
         HashMap<Integer, Integer> map = new HashMap<Integer, Integer>();
@@ -29,17 +26,17 @@ public class BoardModel implements Model {
         return map;
     }
 
-    private ArrayList<ModelListener> modelListeners;
     private ArrayList<Ship> ships;
     private char[][] board;
 
-    public BoardModel() {
-        modelListeners = new ArrayList<ModelListener>();
+    public BoardModel(int boardSize)
+    {
         initShips();
-        initBoard();
+        initBoard(boardSize);
     }
 
-    private void initShips() {
+    private void initShips()
+    {
         ships = new ArrayList<Ship>();
         for (int i = 0; i < SHIP_COUNT.get(1); ++i) {
             ships.add(new Ship(1));
@@ -55,24 +52,25 @@ public class BoardModel implements Model {
         }
     }
 
-    private void initBoard() {
-        board = new char[BOARD_SIZE][BOARD_SIZE];
-        for (int i = 0; i < BOARD_SIZE; ++i) {
-            for (int j = 0; j < BOARD_SIZE; ++j) {
+    private void initBoard(int boardSize)
+    {
+        board = new char[boardSize][boardSize];
+        for (int i = 0; i < boardSize; ++i) {
+            for (int j = 0; j < boardSize; ++j) {
                 board[i][j] = EMPTY_CELL;
             }
         }
         // arrangeShips();
     }
 
-    private void arrangeShips() {
+    private void arrangeShips()
+    {
         for (Ship ship : ships) {
 
             boolean arrangedShip = false;
             ArrayList<ArrayList<Integer>> shipLocations;
 
             while (!arrangedShip) {
-                System.out.printf("BOARD_SIZE is %d\n", BOARD_SIZE);
                 System.out.printf("getBoardSize is %d\n", getBoardSize());
                 int randomRow = (int) Math.random() * getBoardSize();
                 System.out.printf("For ship %c, picked row %d\n", ship.getCell(), randomRow);
@@ -92,12 +90,12 @@ public class BoardModel implements Model {
         }
     }
 
-    private ArrayList<ArrayList<Integer>> getShipLocations(int row, Ship ship) {
-
+    private ArrayList<ArrayList<Integer>> getShipLocations(int row, Ship ship)
+    {
         ArrayList<ArrayList<Integer>> shipLocations;
         shipLocations = new ArrayList<ArrayList<Integer>>();
 
-        for (int col = 0; col < BOARD_SIZE; ++col) {
+        for (int col = 0; col < board.length; ++col) {
 
             if (!cellIsEmpty(row, col))
                 continue;
@@ -107,7 +105,7 @@ public class BoardModel implements Model {
 
             boolean foundShipLocation = false;
 
-            for (int next_col = col + 1; next_col < BOARD_SIZE; ++next_col) {
+            for (int next_col = col + 1; next_col < board.length; ++next_col) {
 
                 // If we have already found enough adjacent cells to arrange the ship.
                 if (shipLocation.size() == ship.getSize()) {
@@ -126,39 +124,35 @@ public class BoardModel implements Model {
                 shipLocations.add(shipLocation);
             }
         }
-
         return shipLocations;
     }
 
-    /* Model Interface */
+    public int getBoardSize()
+    {
+        return board.length;
+    }
 
-    @Override
-    public void addModelListener(ModelListener ml) {
-        if (!modelListeners.contains(ml)) {
-            modelListeners.add(ml);
+    public char[][] getBoard()
+    {
+        return board;
+    }
+
+    public char getCell(int row, int col)
+    {
+        if (!cellIsValid(row, col)) {
+            System.err.println("Error: cell is not valid!");
+            return '\0';
         }
+        return board[row][col];
     }
 
-    @Override
-    public void removeModelListener(ModelListener ml) {
-        modelListeners.remove(ml);
+    public boolean cellIsEmpty(int row, int col)
+    {
+        return (board[row][col] == EMPTY_CELL);
     }
 
-    @Override
-    public void update(ModelEvent event) {
-        for (ModelListener ml : modelListeners) {
-            ml.modelEventHappened(event);
-        }
-    }
-
-    /* Public Methods */
-
-    public int getBoardSize() {
-        return BOARD_SIZE;
-    }
-
-    public void setCell(int row, int col) {
-
+    public void setCell(int row, int col)
+    {
         if (!cellIsValid(row, col)) {
             System.err.println("Error: cell is not valid!");
             return;
@@ -170,31 +164,11 @@ public class BoardModel implements Model {
         }
 
         board[row][col] = OCCUPIED_CELL;
-        update(ModelEvent.UPDATE);
     }
 
-    public char getCell(int row, int col) {
-
-        if (!cellIsValid(row, col)) {
-            System.err.println("Error: cell is not valid!");
-            return '\0';
-        }
-
-        return board[row][col];
-    }
-
-    public char[][] getBoard() {
-        return board;
-    }
-
-    public boolean cellIsEmpty(int row, int col) {
-        return (board[row][col] == EMPTY_CELL);
-    }
-
-    /* Private Methods */
-
-    private boolean cellIsValid(int row, int col) {
-        return (0 <= row && row < BOARD_SIZE) && (0 <= col && col < BOARD_SIZE);
+    private boolean cellIsValid(int row, int col)
+    {
+        return (0 <= row && row < board.length) && (0 <= col && col < board.length);
     }
 
 }

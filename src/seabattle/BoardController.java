@@ -1,47 +1,49 @@
 package seabattle;
 
 
-public class BoardController implements ViewListener, ModelListener {
-
+public class BoardController implements EventListener
+{
     private BoardModel model;
     private BoardView view;
 
-    public BoardController() {
-        model = new BoardModel();
-        model.addModelListener(this);
+    public BoardController()
+    {
+        initModel();
+        initView();
+    }
 
-        view = new BoardView(model.getBoardSize());
-        view.addViewListener(this);
+    private void initModel()
+    {
+        int boardSize = 10;
+        model = new BoardModel(boardSize);
+    }
 
-        view.paint(model.getBoard());
+    private void initView()
+    {
+        char[][] board = model.getBoard();
+        int width = 600 + 2 + 2;
+        int height = 600 + 26;
+        view = new BoardView(board, width, height, "Sea Battle");
+        view.setEventListener(this);
     }
 
     @Override
-    public void viewEventHappened(ViewEvent event) {
-        System.out.printf("Controller: View event happened - ");
+    public void eventHappened(ViewEvent event)
+    {
         switch (event) {
             case MOUSE_PRESS:
-                System.out.printf("MOUSE_PRESS\n");
-                int row = view.getMouseY() / view.getCellSize();
-                int col = view.getMouseX() / view.getCellSize();
-                model.setCell(row, col);
+                processMousePress();
                 break;
             default:
                 break;
         }
     }
 
-    @Override
-    public void modelEventHappened(ModelEvent event) {
-        System.out.printf("Controller: Model event happened - ");
-        switch (event) {
-            case UPDATE:
-                System.out.printf("UPDATE\n");
-                view.repaint();
-                break;
-            default:
-                break;
-        }
+    private void processMousePress()
+    {
+        int row = view.getMouseY() / view.getCellSize();
+        int col = view.getMouseX() / view.getCellSize();
+        model.setCell(row, col);
+        view.repaint(model.getBoard());
     }
-
 }

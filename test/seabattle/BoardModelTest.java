@@ -6,30 +6,30 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-public class BoardModelTest {
+// public class BoardModelTest {
 
-    private BoardModel sample;
+//     private BoardModel sample;
 
-    @Before
-    public void setUp() {
-        System.out.println("Before init");
-        sample = new BoardModel();
-        System.out.println("After init");
-    }
+//     @Before
+//     public void setUp() {
+//         System.out.println("Before init");
+//         sample = new BoardModel();
+//         System.out.println("After init");
+//     }
 
-    @Test
-    public void testGetBoardSize() {
-        System.out.println("Before assert");
-        // Assert.assertEquals(10, sample.getBoardSize());
-        System.out.println("After assert");
-    }
+//     @Test
+//     public void testGetBoardSize() {
+//         System.out.println("Before assert");
+//         // Assert.assertEquals(10, sample.getBoardSize());
+//         System.out.println("After assert");
+//     }
 
-    @After
-    public void settleDown() {
-        sample = null;
-    }
+//     @After
+//     public void settleDown() {
+//         sample = null;
+//     }
 
-}
+// }
 
 // import org.junit.Test;
 
