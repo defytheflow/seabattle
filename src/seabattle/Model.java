@@ -5,6 +5,6 @@ public interface Model {
 
     void addModelListener(ModelListener ml);
     void removeModelListener(ModelListener ml);
-    void update();
+    void update(ModelEvent event);
 
 }

@@ -3,6 +3,6 @@ package seabattle;
 
 public interface ModelListener {
 
-    void modelUpdated();
+    void modelEventHappened(ModelEvent event);
 
 }

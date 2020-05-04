@@ -1,18 +1,14 @@
-/*
- * The Graphical User Interface.
- */
-
 package seabattle;
 
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
-
+import java.util.ArrayList;
 import java.util.HashMap;
 
 
 @SuppressWarnings("serial")
-public class BoardView  extends JFrame implements ModelListener {
+public class BoardView extends JFrame implements View {
 
     private static final int WIDTH;
     private static final int HEIGHT;
@@ -36,28 +32,18 @@ public class BoardView  extends JFrame implements ModelListener {
         return map;
     }
 
-    private BoardController controller;
-    private BoardModel model;
+    private ArrayList<ViewListener> viewListeners;
     private BoardPanel panel;
+
     private int cellSize;
+    private int mouseX;
+    private int mouseY;
 
-    /* Construction/Initialization */
-
-    public BoardView(BoardController controller, BoardModel model) {
+    public BoardView(int boardSize) {
+        viewListeners = new ArrayList<ViewListener>();
         initFrame();
-
-        // Set controller and model references.
-        this.controller = controller;
-        this.model = model;
-
-        // Calculate cellSize in pixels.
-        cellSize =  Math.min(WIDTH, HEIGHT) / model.getBoardSize();
-
-        // Initialize frame components.
+        cellSize = Math.min(WIDTH, HEIGHT) / boardSize;
         initComponents();
-
-        // Draw frame.
-        setVisible(true);
     }
 
     private void initFrame() {
@@ -68,34 +54,58 @@ public class BoardView  extends JFrame implements ModelListener {
     }
 
     private void initComponents() {
-        // Initialize Panel.
         panel = new BoardPanel();
         panel.addMouseListener(new MouseAdapter() {
+
             public void mousePressed(MouseEvent e) {
-                controller.mousePressed(e.getX(), e.getY());
+                mouseX = e.getX();
+                mouseY = e.getY();
+                update(ViewEvent.MOUSE_PRESS);
             }
+
         });
-        // Add panel to Frame.
         getContentPane().add(BorderLayout.CENTER, panel);
     }
 
-
-    /* ModelListener Interface */
-
     @Override
-    public void modelUpdated() {
-        repaint();
+    public void addViewListener(ViewListener vl) {
+        if (!viewListeners.contains(vl)) {
+            viewListeners.add(vl);
+        }
     }
 
-    /* Public Methods */
+    @Override
+    public void removeViewListener(ViewListener vl) {
+        viewListeners.remove(vl);
+    }
+
+    @Override
+    public void update(ViewEvent event) {
+        for (ViewListener vl : viewListeners) {
+            vl.viewEventHappened(event);
+        }
+    }
 
     public int getCellSize() {
         return cellSize;
     }
 
-    /* Inner Class */
+    public int getMouseX() {
+        return mouseX;
+    }
+
+    public int getMouseY() {
+        return mouseY;
+    }
+
+    public void paint(char[][] board) {
+        panel.setBoard(board);
+        setVisible(true);
+    }
 
     class BoardPanel extends JPanel {
+
+        private char[][] board;
 
         @Override
         public void paintComponent(Graphics g) {
@@ -103,11 +113,15 @@ public class BoardView  extends JFrame implements ModelListener {
             drawCellBorders(g);
         }
 
+        public void setBoard(char[][] board) {
+            this.board = board;
+        }
+
         private void drawCells(Graphics g) {
             int y = 0;
-            for (int row = 0; row < model.getBoardSize(); ++row) {
+            for (int row = 0; row < board.length; ++row) {
                 int x = 0;
-                for (int col = 0; col < model.getBoardSize(); ++col) {
+                for (int col = 0; col < board.length; ++col) {
                     g.setColor(getCellColor(row, col));
                     g.fillRect(x, y, cellSize, cellSize);
                     x += cellSize;
@@ -117,7 +131,7 @@ public class BoardView  extends JFrame implements ModelListener {
         }
 
         private Color getCellColor(int row, int col) {
-            return CELLS_COLORS.get(model.getCell(row, col));
+            return CELLS_COLORS.get(board[row][col]);
         }
 
         private void drawCellBorders(Graphics g) {

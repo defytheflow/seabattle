@@ -1,10 +1,3 @@
-/*
- *   - Store data.
- *   - Provide data.
- *   - Update data.
- *
- */
-
 package seabattle;
 
 import java.util.Arrays;
@@ -36,13 +29,9 @@ public class BoardModel implements Model {
         return map;
     }
 
-    /* Instance Variables. */
-
     private ArrayList<ModelListener> modelListeners;
     private ArrayList<Ship> ships;
     private char[][] board;
-
-    /* Construction/Initialization */
 
     public BoardModel() {
         modelListeners = new ArrayList<ModelListener>();
@@ -156,9 +145,9 @@ public class BoardModel implements Model {
     }
 
     @Override
-    public void update() {
+    public void update(ModelEvent event) {
         for (ModelListener ml : modelListeners) {
-            ml.modelUpdated();
+            ml.modelEventHappened(event);
         }
     }
 
@@ -181,7 +170,7 @@ public class BoardModel implements Model {
         }
 
         board[row][col] = OCCUPIED_CELL;
-        update();
+        update(ModelEvent.UPDATE);
     }
 
     public char getCell(int row, int col) {
@@ -192,6 +181,10 @@ public class BoardModel implements Model {
         }
 
         return board[row][col];
+    }
+
+    public char[][] getBoard() {
+        return board;
     }
 
     public boolean cellIsEmpty(int row, int col) {

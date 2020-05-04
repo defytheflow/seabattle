@@ -1,8 +1,8 @@
 package seabattle;
 
 
-interface ViewListener {
+public interface ViewListener {
 
-    void mousePressed(int x, int y);
+    void viewEventHappened(ViewEvent event);
 
 }
